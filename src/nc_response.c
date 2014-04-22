@@ -148,12 +148,14 @@ rsp_filter(struct context *ctx, struct conn *conn, struct msg *msg)
     if (conn->initializing) {
         // ignore the first response assuming it has been caused by Redis's SELECT command
         if (conn->redis) {
+            conn->initializing = false;
             rsp_put(msg);
             log_warn("first rsp %"PRIu64" (Redis SELECT command) len %"PRIu32" on s %d",
                       msg->id, msg->mlen, conn->sd);
             return true;
+        } else {
+            conn->initializing = false;
         }
-        conn->initializing = false;
     }
 
     if (msg_empty(msg)) {
