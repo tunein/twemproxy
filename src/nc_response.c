@@ -145,6 +145,17 @@ rsp_filter(struct context *ctx, struct conn *conn, struct msg *msg)
 
     ASSERT(!conn->client && !conn->proxy);
 
+    if (conn->initializing) {
+        // ignore the first response assuming it has been caused by Redis's SELECT command
+        if (conn->redis) {
+            rsp_put(msg);
+            log_warn("first rsp %"PRIu64" (Redis SELECT command) len %"PRIu32" on s %d",
+                      msg->id, msg->mlen, conn->sd);
+            return true;
+        }
+        conn->initializing = false;
+    }
+
     if (msg_empty(msg)) {
         ASSERT(conn->rmsg == NULL);
         log_debug(LOG_VERB, "filter empty rsp %"PRIu64" on s %d", msg->id,

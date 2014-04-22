@@ -111,6 +111,7 @@ struct server_pool {
     hash_t             key_hash;             /* key hasher */
     struct string      hash_tag;             /* key hash tag (ref in conf_pool) */
     int                timeout;              /* timeout in msec */
+    int                database;             /* Redis database to select (connect to) */
     int                backlog;              /* listen backlog */
     uint32_t           client_connections;   /* maximum # client connection */
     uint32_t           server_connections;   /* maximum # server connection */

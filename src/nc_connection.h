@@ -84,6 +84,7 @@ struct conn {
     unsigned           eof:1;         /* eof? aka passive close? */
     unsigned           done:1;        /* done? aka close? */
     unsigned           redis:1;       /* redis? */
+    unsigned           initializing:1;/* connection initializing state (to track first Redis "SELECT" command) */
 };
 
 TAILQ_HEAD(conn_tqh, conn);

@@ -172,6 +172,8 @@ conn_get(void *owner, bool client, bool redis)
 
     conn->client = client ? 1 : 0;
 
+    conn->initializing = true;
+
     if (conn->client) {
         /*
          * client receives a request, possibly parsing it, and sends a
