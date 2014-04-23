@@ -141,4 +141,6 @@ void server_pool_disconnect(struct context *ctx);
 rstatus_t server_pool_init(struct array *server_pool, struct array *conf_pool, struct context *ctx);
 void server_pool_deinit(struct array *server_pool);
 
+void server_conn_init(struct conn *conn, struct server *server);
+
 #endif

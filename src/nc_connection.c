@@ -172,8 +172,6 @@ conn_get(void *owner, bool client, bool redis)
 
     conn->client = client ? 1 : 0;
 
-    conn->initializing = true;
-
     if (conn->client) {
         /*
          * client receives a request, possibly parsing it, and sends a
@@ -197,6 +195,8 @@ conn_get(void *owner, bool client, bool redis)
         conn->dequeue_inq = NULL;
         conn->enqueue_outq = req_client_enqueue_omsgq;
         conn->dequeue_outq = req_client_dequeue_omsgq;
+        
+        conn->initialize = NULL;
     } else {
         /*
          * server receives a response, possibly parsing it, and sends a
@@ -220,6 +220,8 @@ conn_get(void *owner, bool client, bool redis)
         conn->dequeue_inq = req_server_dequeue_imsgq;
         conn->enqueue_outq = req_server_enqueue_omsgq;
         conn->dequeue_outq = req_server_dequeue_omsgq;
+        
+        conn->initialize = server_conn_init;
     }
 
     conn->ref(conn, owner);
