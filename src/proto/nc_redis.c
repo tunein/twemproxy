@@ -1074,11 +1074,6 @@ redis_parse_req(struct msg *r)
             } else if (isdigit(ch)) {
                 r->rlen = r->rlen * 10 + (uint32_t)(ch - '0');
             } else if (ch == CR) {
-                if (r->rlen == 0) {
-                    log_error("parsed bad req %"PRIu64" of type %d with empty "
-                              "key", r->id, r->type);
-                    goto error;
-                }
                 if (r->rlen >= mbuf_data_size()) {
                     log_error("parsed bad req %"PRIu64" of type %d with key "
                               "length %d that greater than or equal to maximum"
@@ -1180,6 +1175,9 @@ redis_parse_req(struct msg *r)
                 } else if (redis_argkvx(r)) {
                     if (r->rnarg == 0) {
                         goto done;
+                    }
+                    if (r->narg % 2 == 0) {
+                        goto error;
                     }
                     state = SW_ARG1_LEN;
                 } else if (redis_argeval(r)) {
